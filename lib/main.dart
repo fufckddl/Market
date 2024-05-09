@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:marketplace/account/register.dart';
 import 'package:marketplace/sub/ItemList.dart';
 import 'package:marketplace/sub/MyAccount.dart';
 void main() {
@@ -12,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Market Place Example',
-      home: MyHomePage(),
+      home: const MyHomePage(),
       );
   }
 }
@@ -24,6 +27,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  TextEditingController id = TextEditingController(), pwd = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,6 +117,71 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )
       ),
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text("Enter Email", style: TextStyle(fontSize: 15, color: Colors.blue),),
+              Container(
+                width: 300, // 텍스트 필드의 최대 너비를 설정
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: id,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20,),
+              const Text("Enter Password", style: TextStyle(fontSize: 15, color: Colors.blue),),
+              Container(
+                width: 300, // 텍스트 필드의 최대 너비를 설정
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: pwd,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: (){
+                      /**
+                       * 로그인시 json파일 비교해서 로그인 확인.
+                       */
+                    },
+                    child: const Text("로그인"),
+                  ),
+                  SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Register()),
+                      );
+                    },
+                    child: Text("회원가입"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+
     );
   }
 }
