@@ -1,6 +1,6 @@
 {
-    "name": "marketplace",
-    "short_name": "marketplace",
+    "name": "marketapp",
+    "short_name": "marketapp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
