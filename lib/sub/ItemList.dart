@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +22,7 @@ class _ItemList extends State<ItemList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('물품목록'),
+        title: Text('물품 목록'),
       ),
       body: Center(
         child: Container(
