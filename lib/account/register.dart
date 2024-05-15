@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marketplace/account/user.dart';
 
 class MyApp extends StatelessWidget{
   @override
@@ -28,125 +30,111 @@ class _Register extends State<Register> {
       appBar: AppBar(
         title: Text('회원 가입'),
       ),
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Container(
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // 각 Row를 화면 중앙에 위치시킴
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text('이름'),
+                ),
+                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                SizedBox(
                   width: 300,
-                  height: 30,
-                  child: Row(
-                    children: <Widget>[
-                      Text('이름', style: TextStyle(fontSize: 15, color: Colors.blue)),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 15),
-                          controller: name,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(), // 밑줄 스타일 지정
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: TextField(
+                    controller: name,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
                   ),
                 ),
-              ),
-
-
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Container(
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text('아이디'),
+                ),
+                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                SizedBox(
                   width: 300,
-                  height: 30,
-                  child: Row(
-                    children: <Widget>[
-                      Text('아이디', style: TextStyle(fontSize: 15, color: Colors.blue)),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 15),
-                          controller: id,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(), // 밑줄 스타일 지정
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: TextField(
+                    controller: id,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
                   ),
                 ),
-              ),
-
-
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Container(
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text('비밀번호'),
+                ),
+                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                SizedBox(
                   width: 300,
-                  height: 30,
-                  child: Row(
-                    children: <Widget>[
-                      Text('비밀번호', style: TextStyle(fontSize: 15, color: Colors.blue)),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 15),
-                          controller: pwd,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(), // 밑줄 스타일 지정
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: TextField(
+                    controller: pwd,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
                   ),
                 ),
-              ),
-
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Container(
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text('나이'),
+                ),
+                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                SizedBox(
                   width: 300,
-                  height: 30,
-                  child: Row(
-                    children: <Widget>[
-                      Text('나이', style: TextStyle(fontSize: 15, color: Colors.blue)),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 15),
-                          controller: age,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(), // 밑줄 스타일 지정
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: TextField(
+                    controller: age,
+                    keyboardType: TextInputType.number,
+                    maxLines: 1,
                   ),
                 ),
-              ),
+              ],
+            ),
+            SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () async {
+                    // 사용자 정보 생성
+                    final user = User(
+                      id: 'user123',
+                      password: 'password123',
+                      age: '25', // 나이를 문자열로 저장하도록 수정했습니다.
+                      name: 'John Doe',
+                    );
 
-              SizedBox(height: 30,),
-              Padding(
-                padding: EdgeInsets.all(15),
-                child: ElevatedButton(
-                  onPressed: (){},
-                  child: Text('가입하기'),
+                    // 사용자 정보 저장
+
+                    user.saveUserInfo(); // saveUserInfo 함수 호출 시 인스턴스를 통해 호출합니다.
+                  },
+                  child: Text("가입하기"),
                 ),
-              )
-            ],
-          ),
+
+              ],
+            ),
+          ],
         ),
       ),
+
+
+
     );
   }
 }
