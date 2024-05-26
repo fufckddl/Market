@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Market Place',
       home: MyAccount(),
     );
@@ -11,6 +13,8 @@ class MyApp extends StatelessWidget{
 }
 
 class MyAccount extends StatefulWidget{
+  const MyAccount({super.key});
+
   @override
   State<MyAccount> createState() => _MyAccount();
 }
@@ -20,11 +24,11 @@ class _MyAccount extends State<MyAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('내 정보(My Account)'),
+        title: const Text('내 정보(My Account)'),
       ),
       body: Center(
         child: Container(
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CircleAvatar(radius: 50.0, backgroundImage: AssetImage('../img/human.jpg'),),

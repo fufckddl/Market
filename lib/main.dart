@@ -1,11 +1,33 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:marketplace/account/register.dart';
-import 'package:marketplace/sub/ItemList.dart';
+import 'package:marketplace/items/LoadItem.dart';
+import 'package:marketplace/items/UploadItem.dart';
 import 'package:marketplace/sub/MyAccount.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:firebase_core/firebase_core.dart';
+
+
+void init() async{
+}
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: "AIzaSyASp_WdOVL_Ib46yscky-BCSVj2Jvq52Og",
+          authDomain: "market-8ba06.firebaseapp.com",
+          projectId: "market-8ba06",
+          storageBucket: "market-8ba06.appspot.com",
+          messagingSenderId: "210819083785",
+          appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
+          measurementId: "G-1072P2XBQS"
+      ),
+    );
+    runApp(const MyApp());
+  } catch (error) {
+    // Handle initialization error
+    print("Firebase initialization failed: $error");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Market Place Example',
-      home: const MyHomePage(),
+      home: MyHomePage(),
       );
   }
 }
@@ -95,22 +117,26 @@ class _MyHomePageState extends State<MyHomePage> {
                    */
                   Navigator.push(
                       context,
-                    MaterialPageRoute(builder: (context) => MyAccount()),
+                    MaterialPageRoute(builder: (context) => const MyAccount()),
                   );
                 },
               ),
               ListTile(
-                title: const Text('상품 구매(Item List)'),
+                title: const Text('상품 목록(Item List)'),
                 onTap:(){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ItemList()),
+                    MaterialPageRoute(builder: (context) => ItemListPage()),
                   );
                 },
               ),
               ListTile(
-                title: const Text('메뉴 3'),
+                title: const Text('상품 판매(Item Sell)'),
                 onTap:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ImageUploadPage()),
+                  );
                   //메뉴 1번이 선택되었을 때 수행할 동작
                 },
               ),
@@ -123,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text("Enter Email", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              Container(
+              SizedBox(
                 width: 300, // 텍스트 필드의 최대 너비를 설정
                 child: Row(
                   children: <Widget>[
@@ -139,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 20,),
               const Text("Enter Password", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              Container(
+              SizedBox(
                 width: 300, // 텍스트 필드의 최대 너비를 설정
                 child: Row(
                   children: <Widget>[
@@ -153,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
+              const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -165,15 +191,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Text("로그인"),
                   ),
-                  SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
+                  const SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Register()),
+                        MaterialPageRoute(builder: (context) => const Register()),
                       );
                     },
-                    child: Text("회원가입"),
+                    child: const Text("회원가입"),
                   ),
                 ],
               ),
