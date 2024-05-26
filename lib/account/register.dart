@@ -1,11 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:marketplace/account/user.dart';
+//import 'package:marketplace/account/user.dart';
 
 class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Register',
       home: Register(),
     );
@@ -28,7 +29,7 @@ class _Register extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('회원 가입'),
+        title: const Text('회원 가입'),
       ),
       body: Container(
         child: Column(
@@ -37,11 +38,11 @@ class _Register extends State<Register> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 100,
                   child: Text('이름'),
                 ),
-                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
                 SizedBox(
                   width: 300,
                   child: TextField(
@@ -55,11 +56,11 @@ class _Register extends State<Register> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 100,
                   child: Text('아이디'),
                 ),
-                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
                 SizedBox(
                   width: 300,
                   child: TextField(
@@ -73,11 +74,11 @@ class _Register extends State<Register> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 100,
                   child: Text('비밀번호'),
                 ),
-                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
                 SizedBox(
                   width: 300,
                   child: TextField(
@@ -91,11 +92,11 @@ class _Register extends State<Register> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 100,
                   child: Text('나이'),
                 ),
-                SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
+                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
                 SizedBox(
                   width: 300,
                   child: TextField(
@@ -106,25 +107,25 @@ class _Register extends State<Register> {
                 ),
               ],
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () async {
                     // 사용자 정보 생성
-                    final user = User(
+                    /*final user = User(
                       id: 'user123',
                       password: 'password123',
                       age: '25', // 나이를 문자열로 저장하도록 수정했습니다.
                       name: 'John Doe',
-                    );
+                    );*/
 
                     // 사용자 정보 저장
 
-                    user.saveUserInfo(); // saveUserInfo 함수 호출 시 인스턴스를 통해 호출합니다.
+                    //user.saveUserInfo(); // saveUserInfo 함수 호출 시 인스턴스를 통해 호출합니다.
                   },
-                  child: Text("가입하기"),
+                  child: const Text("가입하기"),
                 ),
 
               ],
