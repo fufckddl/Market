@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:marketplace/account/user.dart';
+
 
 class MyApp extends StatelessWidget{
   const MyApp({super.key});
@@ -22,37 +25,54 @@ class Register extends StatefulWidget{
 
 class _Register extends State<Register> {
   TextEditingController id = TextEditingController(),
-  pwd = TextEditingController(),
-  name = TextEditingController(),
-  age = TextEditingController();
+      pwd = TextEditingController(),
+      name = TextEditingController(),
+      age = TextEditingController();
+
+  final FirebaseAuth_auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('회원 가입'),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // 각 Row를 화면 중앙에 위치시킴
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 100,
-                  child: Text('이름'),
-                ),
-                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: name,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
+    body: Center(
+    child: Container(
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+    const Text("Enter Email", style: TextStyle(fontSize: 15, color: Colors.blue),),
+    SizedBox(
+    width: 300, // 텍스트 필드의 최대 너비를 설정
+    child: Row(
+    children: <Widget>[
+    Expanded(
+    child: TextField(
+    controller: id,
+    keyboardType: TextInputType.text,
+    maxLines: 1,
+    ),
+    ),
+    ],
+    ),
+    ),
+    const SizedBox(height: 20,),
+    const Text("Enter Password", style: TextStyle(fontSize: 15, color: Colors.blue),),
+    SizedBox(
+    width: 300, // 텍스트 필드의 최대 너비를 설정
+    child: Row(
+    children: <Widget>[
+    Expanded(
+    child: TextField(
+    controller: pwd,
+    keyboardType: TextInputType.text,
+    maxLines: 1,
+    ),
+    ),
+    ],
+    ),
+    ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -121,6 +141,7 @@ class _Register extends State<Register> {
                       name: 'John Doe',
                     );*/
 
+
                     // 사용자 정보 저장
 
                     //user.saveUserInfo(); // saveUserInfo 함수 호출 시 인스턴스를 통해 호출합니다.
@@ -136,6 +157,7 @@ class _Register extends State<Register> {
 
 
 
+    ),
     );
   }
 }

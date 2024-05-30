@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/account/register.dart';
-import 'package:marketplace/items/LoadItem.dart';
-import 'package:marketplace/items/UploadItem.dart';
-import 'package:marketplace/sub/MyAccount.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'account/login.dart';
+import 'account/register.dart';
+import 'items/UploadItem.dart';
+import 'items/LoadItem.dart';
 
 
 void init() async{
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Market Place Example',
       home: MyHomePage(),
-      );
+    );
   }
 }
 class MyHomePage extends StatefulWidget {
@@ -50,6 +51,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController id = TextEditingController(), pwd = TextEditingController();
+  bool _isLoggedIn = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +87,10 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         elevation: 4,//그림자(회색?)
       ),
-      drawer: Drawer(
+
+
+
+          drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -115,11 +120,12 @@ class _MyHomePageState extends State<MyHomePage> {
                    * 이동할 화면의 StatefulWidget을 생성하여 builder함수에
                    * 전달하여 화면을 이동시킴
                    */
-                  Navigator.push(
-                      context,
+                  /*Navigator.push(
+                    context,
                     MaterialPageRoute(builder: (context) => const MyAccount()),
-                  );
+                  );*/
                 },
+
               ),
               ListTile(
                 title: const Text('상품 목록(Item List)'),
@@ -143,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )
       ),
-      body: Center(
+     /* body: Center(
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-              ),
+              ),*/
               const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -188,26 +194,35 @@ class _MyHomePageState extends State<MyHomePage> {
                       /**
                        * 로그인시 json파일 비교해서 로그인 확인.
                        */
+                      Map<>
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  LoginScreen()),
+                      );
                     },
                     child: const Text("로그인"),
                   ),
                   const SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
                   ElevatedButton(
                     onPressed: () {
+                      setState((){
+                        _isLoggedIn = true;
+                         });
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Register()),
+                        MaterialPageRoute(builder: (context) =>  Register()),
                       );
                     },
                     child: const Text("회원가입"),
                   ),
                 ],
               ),
-            ],
-          ),
+              ],
+
+          );,
         ),
       ),
 
-    );
+    )
   }
 }
