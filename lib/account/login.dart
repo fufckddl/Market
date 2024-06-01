@@ -1,11 +1,17 @@
-import 'dart:convert';
-import 'package:firelogin/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import '../Pgae/afterloginhome.dart';
 
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: LoginScreen(),
+    );
+  }
+}
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,38 +19,33 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _IdController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String? _errorMessage;
 
-  Future<String> _loadJsonAsset() async {
-    return await rootBundle.loadString('assets/users.json');
-  }
+  Future<void> _login(String id, String password) async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user_info')
+        .where('id', isEqualTo: id)
+        .where('password', isEqualTo: password)
+        .get();
 
-  Future<List<Map<String, dynamic>>> _readUsers() async {
-    final jsonString = await _loadJsonAsset();
-    final List<dynamic> jsonData = json.decode(jsonString);
-    return jsonData.map((e) => e as Map<String, dynamic>).toList();
-  }
-
-  Future<void> _login() async {
-    final Id = _IdController.text;
-    final password = _passwordController.text;
-    final users = await _readUsers();
-
-    final user = users.firstWhere(
-          (user) => user['Id'] == Id && user['password'] == password,
-      orElse: () => null,
-    );
-
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
+    if (snapshot.docs.isNotEmpty) {
+      setState(() {
+        _errorMessage = null;
+        // Handle successful login
+        print('Login successful');
+        //로그인 성공 시 Homepage로 이동
+         Navigator.of(context).pushReplacement(
+           MaterialPageRoute(builder: (context) => HomePage(userId: id),
+         )
+         );
+      }
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid Id or password')),
-      );
+      setState(() {
+        _errorMessage = 'Invalid username or password';
+      });
     }
   }
 
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             TextField(
-              controller: _IdController,
+              controller: _idController,
               decoration: InputDecoration(labelText: 'ID'),
             ),
             TextField(
@@ -67,9 +68,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _login,
+              onPressed: () {
+                _login(_idController.text, _passwordController.text);
+              },
               child: Text('로그인'),
             ),
+            if (_errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
           ],
         ),
       ),
