@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'account/login.dart';
-import 'account/register.dart';
+import 'account/signup.dart';
+
 import 'items/UploadItem.dart';
 import 'items/LoadItem.dart';
 
@@ -21,7 +22,8 @@ void main() async {
           storageBucket: "market-8ba06.appspot.com",
           messagingSenderId: "210819083785",
           appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
-          measurementId: "G-1072P2XBQS"
+          measurementId: "G-1072P2XBQS",
+          databaseURL: 'https://market-8ba06.firebaseio.com',
       ),
     );
     runApp(const MyApp());
@@ -146,9 +148,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   //메뉴 1번이 선택되었을 때 수행할 동작
                 },
               ),
-            ],
-          )
-      ),
+
+
+
      /* body: Center(
         child: Container(
           child: Column(
@@ -191,10 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: (){
-                      /**
-                       * 로그인시 json파일 비교해서 로그인 확인.
-                       */
-                      Map<>
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>  LoginScreen()),
@@ -210,19 +209,24 @@ class _MyHomePageState extends State<MyHomePage> {
                          });
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  Register()),
+                        MaterialPageRoute(builder: (context) =>  SignUpPage()),
                       );
                     },
                     child: const Text("회원가입"),
                   ),
                 ],
               ),
-              ],
 
-          );,
-        ),
-      ),
+    ]
+    ),
+    ),
+    );
 
-    )
+
+
+
+
+
+
   }
 }
