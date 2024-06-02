@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/account/register.dart';
-import 'package:marketplace/items/LoadItem.dart';
-import 'package:marketplace/items/UploadItem.dart';
-import 'package:marketplace/sub/MyAccount.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:marketplace/sub/MyAccount.dart';
+import 'account/login.dart';
+import 'account/signup.dart';
+
+import 'items/UploadItem.dart';
+import 'items/LoadItem.dart';
 
 
 void init() async{
@@ -14,13 +17,14 @@ void main() async {
   try {
     await Firebase.initializeApp(
       options: FirebaseOptions(
-          apiKey: "AIzaSyASp_WdOVL_Ib46yscky-BCSVj2Jvq52Og",
-          authDomain: "market-8ba06.firebaseapp.com",
-          projectId: "market-8ba06",
-          storageBucket: "market-8ba06.appspot.com",
-          messagingSenderId: "210819083785",
-          appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
-          measurementId: "G-1072P2XBQS"
+        apiKey: "AIzaSyASp_WdOVL_Ib46yscky-BCSVj2Jvq52Og",
+        authDomain: "market-8ba06.firebaseapp.com",
+        projectId: "market-8ba06",
+        storageBucket: "market-8ba06.appspot.com",
+        messagingSenderId: "210819083785",
+        appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
+        measurementId: "G-1072P2XBQS",
+        databaseURL: 'https://market-8ba06.firebaseio.com',
       ),
     );
     runApp(const MyApp());
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Market Place Example',
       home: MyHomePage(),
-      );
+    );
   }
 }
 class MyHomePage extends StatefulWidget {
@@ -50,6 +54,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController id = TextEditingController(), pwd = TextEditingController();
+  bool _isLoggedIn = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,8 +91,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         elevation: 4,//그림자(회색?)
       ),
+
+
+
       drawer: Drawer(
-          child: ListView(
+        child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               /**
@@ -116,8 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
                    * 전달하여 화면을 이동시킴
                    */
                   Navigator.push(
-                      context,
-                    MaterialPageRoute(builder: (context) => const MyAccount()),
+                    context,
+                    MaterialPageRoute(builder: (context) => MyItemsPage()),
                   );
                 },
               ),
@@ -130,84 +139,39 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 },
               ),
-              ListTile(
-                title: const Text('상품 판매(Item Sell)'),
-                onTap:(){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ImageUploadPage()),
-                  );
-                  //메뉴 1번이 선택되었을 때 수행할 동작
-                },
-              ),
-            ],
-          )
-      ),
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text("Enter Email", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              SizedBox(
-                width: 300, // 텍스트 필드의 최대 너비를 설정
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: id,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20,),
-              const Text("Enter Password", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              SizedBox(
-                width: 300, // 텍스트 필드의 최대 너비를 설정
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: pwd,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: (){
-                      /**
-                       * 로그인시 json파일 비교해서 로그인 확인.
-                       */
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  LoginScreen()),
+                      );
                     },
                     child: const Text("로그인"),
                   ),
                   const SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
                   ElevatedButton(
                     onPressed: () {
+                      setState((){
+                        _isLoggedIn = true;
+                      });
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Register()),
+                        MaterialPageRoute(builder: (context) =>  SignUpPage()),
                       );
                     },
                     child: const Text("회원가입"),
                   ),
                 ],
               ),
-            ],
-          ),
+
+            ]
         ),
       ),
-
     );
   }
 }
