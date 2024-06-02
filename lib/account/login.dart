@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('Login successful');
         //로그인 성공 시 Homepage로 이동
          Navigator.of(context).pushReplacement(
-           MaterialPageRoute(builder: (context) => HomePage(userId: id),
+           MaterialPageRoute(builder: (context) => HomePage(userUid: id),
          )
          );
       }

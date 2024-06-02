@@ -24,7 +24,7 @@ class ChargePage extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                final amount = int.tryParse(_amountController.text) ?? 0;
+                int amount = int.tryParse(_amountController.text) ?? 0;
                 onCharge(amount);
                 Navigator.pop(context); // 충전 후 페이지 닫기
               },
