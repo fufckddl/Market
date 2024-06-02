@@ -15,6 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _moneyController = TextEditingController();
 
   Future<void> _signUp() async {
+    final int? amount = int.tryParse(_moneyController.text);
     try {
       await FirebaseFirestore.instance.collection('user_info').add({
         'id': _idController.text,
