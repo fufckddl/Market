@@ -1,141 +1,169 @@
 import 'package:flutter/material.dart';
-//import 'package:marketplace/account/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:marketplace/main.dart';
 
-class MyApp extends StatelessWidget{
-  const MyApp({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Register',
-      home: Register(),
+    return MaterialApp(
+      home: SignUpPage(),
     );
   }
 }
 
-class Register extends StatefulWidget{
-  const Register({super.key});
-
+class SignUpPage extends StatefulWidget {
   @override
-  State<Register> createState() => _Register();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _Register extends State<Register> {
-  TextEditingController id = TextEditingController(),
-  pwd = TextEditingController(),
-  name = TextEditingController(),
-  age = TextEditingController();
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  String? _errorMessage;
+
+  Future<void> _signUp() async {
+    setState(() {
+      _errorMessage = null; // Reset error message
+    });
+
+
+    // 입력값 검증: 비밀번호가 숫자만 포함하고 최소 4자리 이상이어야 한다.
+    if (!RegExp(r'^\d+$').hasMatch(_passwordController.text)) {
+      setState(() {
+        _errorMessage = '1. Password must be an integer value.';
+      });
+      return;
+    }
+
+    if (_passwordController.text.length < 4) {
+      setState(() {
+        _errorMessage = '1-1 Password must be at least 4 digits long.';
+      });
+      return;
+    }
+
+    if (!_emailController.text.contains('@')) {
+      setState(() {
+        _errorMessage = '2. Invalid email format';
+      });
+      return;
+    }
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Firebase Realtime Database에 추가 정보 저장
+      DatabaseReference ref = FirebaseDatabase.instance.ref("user_info/${userCredential.user!.uid}");
+      await ref.set({
+        'id': _idController.text,
+        'password': int.parse(_passwordController.text),
+        'name': _nameController.text,
+        'money': 0,
+        'email': _emailController.text,
+      });
+
+      setState(() {
+        _errorMessage = null;
+      });
+
+      // 회원가입 성공 시 홈 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          setState(() {
+            _errorMessage = '3. The email address is already in use by another account.';
+          });
+          break;
+        case 'invalid-email':
+          setState(() {
+            _errorMessage = '4. The email address is not valid.';
+          });
+          break;
+        case 'operation-not-allowed':
+          setState(() {
+            _errorMessage = '5. Email/password accounts are not enabled.';
+          });
+          break;
+        case 'weak-password':
+          setState(() {
+            _errorMessage = '6. The password is not strong enough.';
+          });
+          break;
+       /* default:
+          setState(() {
+            _errorMessage = '7. An undefined Error happened.';
+          });*/
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = '8. An unexpected error occurred: $e';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('회원 가입'),
+        title: Text('회원가입'),
       ),
-      body: Container(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // 각 Row를 화면 중앙에 위치시킴
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 100,
-                  child: Text('이름'),
-                ),
-                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: name,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
+            TextField(
+              controller: _idController,
+              decoration: InputDecoration(labelText: 'ID'),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 100,
-                  child: Text('아이디'),
-                ),
-                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: id,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+              keyboardType: TextInputType.number,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 100,
-                  child: Text('비밀번호'),
-                ),
-                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: pwd,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 100,
-                  child: Text('나이'),
-                ),
-                const SizedBox(width: 10), // 텍스트와 텍스트 필드 사이의 간격 조정
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: age,
-                    keyboardType: TextInputType.number,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () async {
-                    // 사용자 정보 생성
-                    /*final user = User(
-                      id: 'user123',
-                      password: 'password123',
-                      age: '25', // 나이를 문자열로 저장하도록 수정했습니다.
-                      name: 'John Doe',
-                    );*/
-
-                    // 사용자 정보 저장
-
-                    //user.saveUserInfo(); // saveUserInfo 함수 호출 시 인스턴스를 통해 호출합니다.
-                  },
-                  child: const Text("가입하기"),
-                ),
-
-              ],
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _signUp,
+              child: Text('회원가입'),
             ),
+            if (_errorMessage != null)
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
           ],
         ),
       ),
-
-
-
     );
   }
 }
+

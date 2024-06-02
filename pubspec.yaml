@@ -19,7 +19,9 @@ dependencies:
   cloud_firestore: ^4.17.4
   firebase_storage: ^11.7.6
   firebase_auth: ^4.19.6
-
+  firebase_database: ^10.2.0
+  image_picker: ^0.8.2
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -36,5 +38,3 @@ flutter:
     - img/peach.jpg
     - img/strawberries.jpg
     - img/human.jpg
-    - lib/data/
-    - lib/userinfo/
