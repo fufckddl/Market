@@ -43,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text('회원가입'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -51,27 +51,27 @@ class _SignUpPageState extends State<SignUpPage> {
           children: <Widget>[
             TextField(
               controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+              decoration: InputDecoration(labelText: '아이디'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: '비밀번호'),
             ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: '이름'),
             ),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: '이메일'),
             ),
             TextField(
               controller: _moneyController,
-              decoration: InputDecoration(labelText: 'money'),
+              decoration: InputDecoration(labelText: '자금'),
             ),
             ElevatedButton(
               onPressed: _signUp,
-              child: Text('Sign Up'),
+              child: Text('회원가입'),
             ),
           ],
         ),

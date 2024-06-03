@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   await _auth.signOut();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-                child: Text('Logout'),
+                child: Text('로그아웃'),
               ),
             ),
             ListTile(

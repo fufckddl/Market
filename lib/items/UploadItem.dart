@@ -143,7 +143,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Upload to ImageBB and Firestore'),
+        title: Text('상품 판매 페이지'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -151,41 +151,45 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _imageData == null
-                  ? Text('No image selected.')
-                  : Image.memory(_imageData!),
+                  ? Text('상품 사진을 선택해주세요.')
+                  : Image.memory(
+                _imageData!,
+                width: 300,
+                height: 300,
+                ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: Text('Pick Image'),
+                child: Text('상품 사진 선택'),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _uploadImage,
-                child: Text('Upload Image and Add Item'),
+                child: Text('상품을 업로드하기'),
               ),
               SizedBox(height: 20),
               _uploadedImageUrl == null
                   ? Container()
-                  : SelectableText('Uploaded Image URL: $_uploadedImageUrl'),
+                  : SelectableText('상품이미지 저장 경로: $_uploadedImageUrl'),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Item Name'),
+                  decoration: InputDecoration(labelText: '상품 이름'),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: _priceController,
-                  decoration: InputDecoration(labelText: 'Item Price'),
+                  decoration: InputDecoration(labelText: '상품 가격'),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: _infoController,
-                  decoration: InputDecoration(labelText: 'Item Info'),
+                  decoration: InputDecoration(labelText: '상품 설명'),
                 ),
               ),
             ],
