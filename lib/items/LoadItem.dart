@@ -47,6 +47,11 @@ class ItemListPage extends StatelessWidget {
   }
 
   void _showPurchaseDialog(BuildContext context, String itemName, int itemPrice, String sellerId) async {
+    if (userId == sellerId) {
+      _showErrorDialog(context, '자신의 물품은 구매/판매 할 수 없습니다.');
+      return; // 구매자와 판매자가 같은 경우, 다이얼로그를 띄우지 않고 리턴
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -69,15 +74,25 @@ class ItemListPage extends StatelessWidget {
                   print('userId: $userId');
                   print('sellerId: $sellerId');
 
-                  final userDoc = await FirebaseFirestore.instance.collection('user_info').doc(userId).get();
-                  final sellerDoc = await FirebaseFirestore.instance.collection('user_info').doc(sellerId).get();
+                  // 사용자 문서를 쿼리로 가져오기
+                  final userQuerySnapshot = await FirebaseFirestore.instance
+                      .collection('user_info')
+                      .where('id', isEqualTo: userId)
+                      .get();
+                  final sellerQuerySnapshot = await FirebaseFirestore.instance
+                      .collection('user_info')
+                      .where('id', isEqualTo: sellerId)
+                      .get();
 
-                  if (!userDoc.exists || !sellerDoc.exists) {
-                    print('UserDoc exists: ${userDoc.exists}');
-                    print('SellerDoc exists: ${sellerDoc.exists}');
+                  if (userQuerySnapshot.docs.isEmpty || sellerQuerySnapshot.docs.isEmpty) {
+                    print('UserDoc exists: ${userQuerySnapshot.docs.isNotEmpty}');
+                    print('SellerDoc exists: ${sellerQuerySnapshot.docs.isNotEmpty}');
                     _showErrorDialog(context, '사용자 정보를 가져올 수 없습니다.');
                     return;
                   }
+
+                  final userDoc = userQuerySnapshot.docs.first;
+                  final sellerDoc = sellerQuerySnapshot.docs.first;
 
                   final userMoney = userDoc.data()?['money'];
                   final sellerMoney = sellerDoc.data()?['money'];
@@ -113,7 +128,6 @@ class ItemListPage extends StatelessWidget {
       },
     );
   }
-
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
