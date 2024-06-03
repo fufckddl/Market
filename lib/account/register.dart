@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firelogin/main.dart';
+import 'package:marketplace/main.dart';
 
-/*void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -165,6 +165,5 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-}*/
-
+}
 
