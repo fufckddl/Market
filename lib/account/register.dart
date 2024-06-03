@@ -130,21 +130,21 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             TextField(
               controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+              decoration: InputDecoration(labelText: '아이디'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: '비밀번호'),
               obscureText: true,
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: '이름'),
             ),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: '이메일'),
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
