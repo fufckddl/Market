@@ -99,7 +99,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
           'item_seller': widget.itemSeller,
           'item_img_url': _uploadedImageUrl,
           'item_name': _nameController.text,
-          'item_price': _priceController.text,
+          'item_price': int.tryParse(_priceController.text) ?? 0, // int로 변환
           'item_info': _infoController.text,
         });
 

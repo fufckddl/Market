@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              ListTile(
+              /*ListTile(
                 title: const Text('내 정보(My Account)'),
                 onTap:(){
                   /**
@@ -129,8 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(builder: (context) => MyItemsPage()),
                   );
                 },
-              ),
-              ListTile(
+              ),*/
+              /*ListTile(
                 title: const Text('상품 목록(Item List)'),
                 onTap:(){
                   Navigator.push(
@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(builder: (context) => ItemListPage()),
                   );
                 },
-              ),
+              ),*/
               const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
