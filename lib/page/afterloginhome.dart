@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:marketplace/items/LoadItem.dart';
 import 'package:marketplace/sub/Charge.dart';
 import 'package:marketplace/items/UploadItem.dart';
 import 'package:marketplace/sub/MyAccount.dart';
@@ -159,6 +160,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   }
                 },
                 child: Text('상품판매'),
+              ),
+            ),
+            ListTile(
+              title: ElevatedButton(
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ItemListPage(userId: userId!,)),
+                  );
+                  _getUserInfo();
+                },
+                child: Text('상품목록'),
               ),
             ),
           ],
