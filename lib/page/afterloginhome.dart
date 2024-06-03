@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ],
         ),
       ),
-      body: ItemListPage(userId: userId!), // 로그인한 사용자의 ID 전달
+      body: ItemListPage(userId: userId ?? ''), // 로그인한 사용자의 ID 전달
     );
   }
 }
