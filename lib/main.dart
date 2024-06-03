@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:marketplace/sub/MyAccount.dart';
 import 'account/login.dart';
 import 'account/signup.dart';
 
@@ -16,14 +17,14 @@ void main() async {
   try {
     await Firebase.initializeApp(
       options: FirebaseOptions(
-          apiKey: "AIzaSyASp_WdOVL_Ib46yscky-BCSVj2Jvq52Og",
-          authDomain: "market-8ba06.firebaseapp.com",
-          projectId: "market-8ba06",
-          storageBucket: "market-8ba06.appspot.com",
-          messagingSenderId: "210819083785",
-          appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
-          measurementId: "G-1072P2XBQS",
-          databaseURL: 'https://market-8ba06.firebaseio.com',
+        apiKey: "AIzaSyASp_WdOVL_Ib46yscky-BCSVj2Jvq52Og",
+        authDomain: "market-8ba06.firebaseapp.com",
+        projectId: "market-8ba06",
+        storageBucket: "market-8ba06.appspot.com",
+        messagingSenderId: "210819083785",
+        appId: "1:210819083785:web:e07bd51dd00de9f92952d8",
+        measurementId: "G-1072P2XBQS",
+        databaseURL: 'https://market-8ba06.firebaseio.com',
       ),
     );
     runApp(const MyApp());
@@ -54,6 +55,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController id = TextEditingController(), pwd = TextEditingController();
   bool _isLoggedIn = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,8 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-          drawer: Drawer(
-          child: ListView(
+      drawer: Drawer(
+        child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               /**
@@ -113,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              ListTile(
+              /*ListTile(
                 title: const Text('내 정보(My Account)'),
                 onTap:(){
                   /**
@@ -122,14 +124,13 @@ class _MyHomePageState extends State<MyHomePage> {
                    * 이동할 화면의 StatefulWidget을 생성하여 builder함수에
                    * 전달하여 화면을 이동시킴
                    */
-                  /*Navigator.push(
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MyAccount()),
-                  );*/
+                    MaterialPageRoute(builder: (context) => MyItemsPage()),
+                  );
                 },
-
-              ),
-              ListTile(
+              ),*/
+              /*ListTile(
                 title: const Text('상품 목록(Item List)'),
                 onTap:(){
                   Navigator.push(
@@ -137,55 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(builder: (context) => ItemListPage()),
                   );
                 },
-              ),
-              ListTile(
-                title: const Text('상품 판매(Item Sell)'),
-                onTap:(){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ImageUploadPage()),
-                  );
-                  //메뉴 1번이 선택되었을 때 수행할 동작
-                },
-              ),
-
-
-
-     /* body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text("Enter Email", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              SizedBox(
-                width: 300, // 텍스트 필드의 최대 너비를 설정
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: id,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20,),
-              const Text("Enter Password", style: TextStyle(fontSize: 15, color: Colors.blue),),
-              SizedBox(
-                width: 300, // 텍스트 필드의 최대 너비를 설정
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: pwd,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
               ),*/
               const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
@@ -206,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       setState((){
                         _isLoggedIn = true;
-                         });
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>  SignUpPage()),
@@ -217,16 +169,103 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
 
-    ]
-    ),
-    ),
+            ]
+        ),
+      ),
+      body: ItemtoList(),
     );
+  }
+}class ItemtoList extends StatelessWidget {
+  final List<Map<String, String>> items = [
+    {
+      'name': 'Item 1',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 2',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },{
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },{
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },{
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },{
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },{
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
+    {
+      'name': 'Item 3',
+      'image': 'https://via.placeholder.com/150',
+    },
 
 
 
 
 
 
+  ];
 
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          },
+          child: Card(
+            child: Row(
+              children: [
+                Image.network(
+                  item['image']!,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(width: 10),
+                Text(item['name']!),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

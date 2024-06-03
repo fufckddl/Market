@@ -1,58 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+class MyItemsPage extends StatefulWidget {
+  final String? userUid;
 
-class MyApp extends StatelessWidget{
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Market Place',
-      home: MyAccount(),
-    );
-  }
-}
-
-class MyAccount extends StatefulWidget{
-  const MyAccount({super.key});
+  MyItemsPage({this.userUid});
 
   @override
-  State<MyAccount> createState() => _MyAccount();
+  _MyItemsPageState createState() => _MyItemsPageState();
 }
 
-class _MyAccount extends State<MyAccount> {
+class _MyItemsPageState extends State<MyItemsPage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('내 정보(My Account)'),
+        title: Text('My Items'),
       ),
-      body: Center(
-        child: Container(
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(radius: 50.0, backgroundImage: AssetImage('../img/human.jpg'),),
-              SizedBox(height: 20), // CircleAvatar와 Text 사이의 공간
-              Text('User Name'),
-              SizedBox(height: 50), // 그룹 간의 수직 간격
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  /**
-                   * Button으로 변경해야함.
-                   */
-                  Text('구매중'),
-                  SizedBox(width: 30),
-                  Text('배송 완료'),
-                  SizedBox(width: 30),
-                  Text('장바구니')
+      body: FutureBuilder(
+        future: _fetchUserItems(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No items found.'));
+          }
+
+          // 사용자가 올린 상품 목록을 보여주는 ListView
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String imageUrl = data['item_img_url']; // 상품 이미지 URL
+
+              return Column(
+                children: [
+                  ListTile(
+                    leading: imageUrl != null
+                        ? Image.network(
+                      imageUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                        : Icon(Icons.image), // 이미지가 없는 경우 기본 아이콘 표시
+                    title: Text(data['item_name']),
+                    subtitle: Text('Price: ${data['item_price']}원'),
+                  ),
+                  Divider(), // 리스트 항목 간 구분선 추가
                 ],
-              ),
-              // 추가적인 그룹들...
-            ],
-          ),
-        ),
+              );
+            },
+          );
+        },
       ),
     );
+  }
+
+  Future<QuerySnapshot> _fetchUserItems() {
+    return _firestore.collection('item_list')
+        .where('item_seller', isEqualTo: widget.userUid)
+        .get();
   }
 }

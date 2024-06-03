@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ItemListPage(),
-    );
-  }
-}
-
 class ItemListPage extends StatelessWidget {
+  final String userId; // 사용자의 ID를 저장하는 변수
+
+  ItemListPage({required this.userId}); // 생성자를 통해 사용자의 ID를 전달받음
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +36,7 @@ class ItemListPage extends StatelessWidget {
                 subtitle: Text(data['item_info']),
                 trailing: Text('${data['item_price']}원'),
                 onTap: () {
-                  _showPurchaseDialog(context, data['item_name']);
+                  _showPurchaseDialog(context, data['item_name'], data['item_price'], data['item_seller']);
                 },
               );
             },
@@ -55,19 +46,18 @@ class ItemListPage extends StatelessWidget {
     );
   }
 
-  void _showPurchaseDialog(BuildContext context, String itemName) {
-    final TextEditingController _quantityController = TextEditingController();
+  void _showPurchaseDialog(BuildContext context, String itemName, int itemPrice, String sellerId) async {
+    if (userId == sellerId) {
+      _showErrorDialog(context, '자신의 물품은 구매/판매 할 수 없습니다.');
+      return; // 구매자와 판매자가 같은 경우, 다이얼로그를 띄우지 않고 리턴
+    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('구입할 개수를 입력하세요'),
-          content: TextField(
-            controller: _quantityController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: "개수"),
-          ),
+          title: Text('구입하시겠습니까?'),
+          content: Text('상품: $itemName\n가격: $itemPrice원'),
           actions: <Widget>[
             TextButton(
               child: Text('취소'),
@@ -77,12 +67,79 @@ class ItemListPage extends StatelessWidget {
             ),
             TextButton(
               child: Text('확인'),
-              onPressed: () {
-                final int quantity = int.tryParse(_quantityController.text) ?? 0;
-                if (quantity > 0) {
-                  // Perform any action you want with the quantity
-                  print('Item: $itemName, Quantity: $quantity');
+              onPressed: () async {
+                final int totalPrice = itemPrice;
+
+                try {
+                  print('userId: $userId');
+                  print('sellerId: $sellerId');
+
+                  // 사용자 문서를 쿼리로 가져오기
+                  final userQuerySnapshot = await FirebaseFirestore.instance
+                      .collection('user_info')
+                      .where('id', isEqualTo: userId)
+                      .get();
+                  final sellerQuerySnapshot = await FirebaseFirestore.instance
+                      .collection('user_info')
+                      .where('id', isEqualTo: sellerId)
+                      .get();
+
+                  if (userQuerySnapshot.docs.isEmpty || sellerQuerySnapshot.docs.isEmpty) {
+                    print('UserDoc exists: ${userQuerySnapshot.docs.isNotEmpty}');
+                    print('SellerDoc exists: ${sellerQuerySnapshot.docs.isNotEmpty}');
+                    _showErrorDialog(context, '사용자 정보를 가져올 수 없습니다.');
+                    return;
+                  }
+
+                  final userDoc = userQuerySnapshot.docs.first;
+                  final sellerDoc = sellerQuerySnapshot.docs.first;
+
+                  final userMoney = userDoc.data()?['money'];
+                  final sellerMoney = sellerDoc.data()?['money'];
+
+                  print('userMoney: $userMoney');
+                  print('sellerMoney: $sellerMoney');
+
+                  if (userMoney == null || sellerMoney == null) {
+                    _showErrorDialog(context, '금액 정보를 가져올 수 없습니다.');
+                    return;
+                  }
+
+                  if (userMoney < totalPrice) {
+                    _showErrorDialog(context, '돈이 부족합니다.');
+                    return;
+                  }
+
+                  await FirebaseFirestore.instance.runTransaction((transaction) async {
+                    transaction.update(userDoc.reference, {'money': userMoney - totalPrice});
+                    transaction.update(sellerDoc.reference, {'money': sellerMoney + totalPrice});
+                  });
+
+                  _showSuccessDialog(context, '구매가 완료되었습니다.');
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                } catch (e) {
+                  print('Error: $e');
+                  _showErrorDialog(context, '오류가 발생했습니다: $e');
                 }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('에러'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -91,4 +148,30 @@ class ItemListPage extends StatelessWidget {
       },
     );
   }
+
+  void _showSuccessDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('성공'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: ItemListPage(userId: 'dlckdfuf'),
+  ));
 }

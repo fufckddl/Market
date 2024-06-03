@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import '../Pgae/afterloginhome.dart';
+import '../page/afterloginhome.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -36,10 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
         // Handle successful login
         print('Login successful');
         //로그인 성공 시 Homepage로 이동
-         Navigator.of(context).pushReplacement(
-           MaterialPageRoute(builder: (context) => HomePage(userUid: id),
-         )
-         );
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage(userUid: id),
+            )
+        );
       }
       );
     } else {
