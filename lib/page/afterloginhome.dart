@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:marketplace/items/LoadItem.dart';
 import 'package:marketplace/sub/Charge.dart';
 import 'package:marketplace/items/UploadItem.dart';
@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         DocumentSnapshot userInfo = querySnapshot.docs.first;
         setState(() {
           documentId = userInfo.id; // Firestore 문서의 ID 저장
+          //userImageUrl = userInfo['imageUrl'];
           userMoney = userInfo['money'] ?? 0;
           userName = userInfo['name'];
           userId = userInfo['id'];
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       print('Failed to get user info: $e');
     }
   }
+
 
   void _chargeMoney(int amount) {
     setState(() {
@@ -127,13 +129,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               title: ElevatedButton(
                 onPressed: () async {
                   await Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MyItemsPage(userUid: userId)),
+                      MaterialPageRoute(builder: (context) => MyItemsPage(userUid: userId,))
                   );
                   _getUserInfo();
                 },
                 child: Text('내 정보'),
               ),
             ),
+
             ListTile(
               title: ElevatedButton(
                 onPressed: () async {
@@ -154,7 +157,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               title: ElevatedButton(
                 onPressed: () async {
                   await Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ItemListPage(userId: userId!)),
+                    MaterialPageRoute(builder: (context) => ItemListPage(userId: userId!,)),
                   );
                   _getUserInfo();
                 },
@@ -168,13 +171,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   await _auth.signOut();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-                child: Text('Logout'),
+                child: Text('로그아웃'),
               ),
             ),
           ],
+
         ),
+
       ),
       body: ItemListPage(userId: userId ?? ''), // 로그인한 사용자의 ID 전달
     );
+
+
+
   }
 }

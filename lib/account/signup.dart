@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/account/login.dart';
 
@@ -16,41 +17,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _moneyController = TextEditingController();
 
   Future<void> _signUp() async {
-    final String id = _idController.text;
-    final String password = _passwordController.text;
-    final String name = _nameController.text;
-    final String email = _emailController.text;
-    final int? money = int.tryParse(_moneyController.text);
-
-    if (money == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: Money must be a valid number.'))
-      );
-      return;
-    }
-
+    final int? amount = int.tryParse(_moneyController.text);
     try {
-      // Firestore에서 동일한 ID가 있는지 확인
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('user_info')
-          .where('id', isEqualTo: id)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // 동일한 ID가 이미 존재할 경우 예외 처리
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ID already exists.'))
-        );
-        return;
-      }
-
-      // 동일한 ID가 없을 경우 회원가입 진행
       await FirebaseFirestore.instance.collection('user_info').add({
-        'id': id,
-        'password': password,
-        'name': name,
-        'email': email,
-        'money': money,
+        'id': _idController.text,
+        'password': _passwordController.text,
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'money': _moneyController.text,
       });
 
       // 회원가입 후 로그인 페이지로 이동
@@ -69,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text('회원가입'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -77,28 +51,27 @@ class _SignUpPageState extends State<SignUpPage> {
           children: <Widget>[
             TextField(
               controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+              decoration: InputDecoration(labelText: '아이디'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: '비밀번호'),
             ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: '이름'),
             ),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: '이메일'),
             ),
             TextField(
               controller: _moneyController,
-              decoration: InputDecoration(labelText: 'Money'),
-              keyboardType: TextInputType.number, // 숫자 입력만 가능하게 설정
+              decoration: InputDecoration(labelText: '자금'),
             ),
             ElevatedButton(
               onPressed: _signUp,
-              child: Text('Sign Up'),
+              child: Text('회원가입'),
             ),
           ],
         ),
