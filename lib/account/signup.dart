@@ -14,17 +14,39 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _moneyController = TextEditingController();
+
 
   Future<void> _signUp() async {
-    final int? amount = int.tryParse(_moneyController.text);
+    final String id = _idController.text;
+    final String password = _passwordController.text;
+    final String name = _nameController.text;
+    final String email = _emailController.text;
+
+
+
+
     try {
+      // Firestore에서 동일한 ID가 있는지 확인
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_info')
+          .where('id', isEqualTo: id)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // 동일한 ID가 이미 존재할 경우 예외 처리
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ID already exists.'))
+        );
+        return;
+      }
+
+      // 동일한 ID가 없을 경우 회원가입 진행
       await FirebaseFirestore.instance.collection('user_info').add({
-        'id': _idController.text,
-        'password': _passwordController.text,
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'money': _moneyController.text,
+        'id': id,
+        'password': password,
+        'name': name,
+        'email': email,
+        'money': 0,
       });
 
       // 회원가입 후 로그인 페이지로 이동
@@ -65,10 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
               controller: _emailController,
               decoration: InputDecoration(labelText: '이메일'),
             ),
-            TextField(
-              controller: _moneyController,
-              decoration: InputDecoration(labelText: '자금'),
-            ),
+
             ElevatedButton(
               onPressed: _signUp,
               child: Text('회원가입'),
@@ -76,6 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         ),
       ),
+
     );
   }
 }
