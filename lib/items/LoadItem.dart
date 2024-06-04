@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ItemListPage extends StatelessWidget {
-  final String userId; // 사용자의 ID를 저장하는 변수
+import '../account/login.dart';
+import '../main.dart';
 
-  ItemListPage({required this.userId}); // 생성자를 통해 사용자의 ID를 전달받음
+class ItemListPage extends StatelessWidget {
+  final String userId;
+
+  ItemListPage({required this.userId,});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Items List'),
+        title: Text('상품 목록'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('item_list').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('오류: ${snapshot.error}'));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -32,11 +35,12 @@ class ItemListPage extends StatelessWidget {
 
               return ListTile(
                 leading: Image.network(data['item_img_url']),
-                title: Text(data['item_name']),
-                subtitle: Text(data['item_info']),
-                trailing: Text('${data['item_price']}원'),
+                title: Text('상품 명: ' + data['item_name']),
+                subtitle: Text('상품 설명: ' + data['item_info']),
+                trailing: Text('가격: ${data['item_price']}원'),
                 onTap: () {
-                  _showPurchaseDialog(context, data['item_name'], data['item_price'], data['item_seller']);
+                  // 여기에서 item.id를 _showPurchaseDialog 함수에 전달합니다.
+                  _showPurchaseDialog(context, data['item_name'], data['item_price'], data['item_seller'], item.id);
                 },
               );
             },
@@ -46,10 +50,10 @@ class ItemListPage extends StatelessWidget {
     );
   }
 
-  void _showPurchaseDialog(BuildContext context, String itemName, int itemPrice, String sellerId) async {
+  void _showPurchaseDialog(BuildContext context, String itemName, int itemPrice, String sellerId, String itemId) async {
     if (userId == sellerId) {
       _showErrorDialog(context, '자신의 물품은 구매/판매 할 수 없습니다.');
-      return; // 구매자와 판매자가 같은 경우, 다이얼로그를 띄우지 않고 리턴
+      return;
     }
 
     showDialog(
@@ -74,7 +78,6 @@ class ItemListPage extends StatelessWidget {
                   print('userId: $userId');
                   print('sellerId: $sellerId');
 
-                  // 사용자 문서를 쿼리로 가져오기
                   final userQuerySnapshot = await FirebaseFirestore.instance
                       .collection('user_info')
                       .where('id', isEqualTo: userId)
@@ -87,18 +90,18 @@ class ItemListPage extends StatelessWidget {
                   if (userQuerySnapshot.docs.isEmpty || sellerQuerySnapshot.docs.isEmpty) {
                     print('UserDoc exists: ${userQuerySnapshot.docs.isNotEmpty}');
                     print('SellerDoc exists: ${sellerQuerySnapshot.docs.isNotEmpty}');
-                    _showErrorDialog(context, '사용자 정보를 가져올 수 없습니다.');
+                    _ShowErrorDialog(context, '사용자 정보를 가져올 수 없습니다. 로그인하세요');
                     return;
                   }
+
+                  
+
 
                   final userDoc = userQuerySnapshot.docs.first;
                   final sellerDoc = sellerQuerySnapshot.docs.first;
 
                   final userMoney = userDoc.data()?['money'];
                   final sellerMoney = sellerDoc.data()?['money'];
-
-                  print('userMoney: $userMoney');
-                  print('sellerMoney: $sellerMoney');
 
                   if (userMoney == null || sellerMoney == null) {
                     _showErrorDialog(context, '금액 정보를 가져올 수 없습니다.');
@@ -113,10 +116,13 @@ class ItemListPage extends StatelessWidget {
                   await FirebaseFirestore.instance.runTransaction((transaction) async {
                     transaction.update(userDoc.reference, {'money': userMoney - totalPrice});
                     transaction.update(sellerDoc.reference, {'money': sellerMoney + totalPrice});
-                  });
 
-                  _showSuccessDialog(context, '구매가 완료되었습니다.');
+                    // 여기에서 특정 아이템의 ID를 사용하여 Firestore에서 해당 아이템을 삭제합니다.
+                    await transaction.delete(FirebaseFirestore.instance.collection('item_list').doc(itemId));
+                  });
                   Navigator.of(context).pop(); // 다이얼로그 닫기
+                  _showSuccessDialog(context, '구매가 완료되었습니다.');
+
                 } catch (e) {
                   print('Error: $e');
                   _showErrorDialog(context, '오류가 발생했습니다: $e');
@@ -148,8 +154,43 @@ class ItemListPage extends StatelessWidget {
       },
     );
   }
+}
 
-  void _showSuccessDialog(BuildContext context, String message) {
+void _ShowErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('에러'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text('취소'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
+            },
+          ),
+          TextButton(
+            child: Text('로그인'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showSuccessDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -168,10 +209,3 @@ class ItemListPage extends StatelessWidget {
       },
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ItemListPage(userId: 'dlckdfuf'),
-  ));
-}

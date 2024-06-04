@@ -16,7 +16,7 @@ class _MyItemsPageState extends State<MyItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Items'),
+        title: Text('나의 판매목록'),
       ),
       body: FutureBuilder(
         future: _fetchUserItems(),
@@ -28,7 +28,7 @@ class _MyItemsPageState extends State<MyItemsPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No items found.'));
+            return Center(child: Text('이미지를 찾을 수 없습니다.'));
           }
 
           // 사용자가 올린 상품 목록을 보여주는 ListView
@@ -50,8 +50,8 @@ class _MyItemsPageState extends State<MyItemsPage> {
                       fit: BoxFit.cover,
                     )
                         : Icon(Icons.image), // 이미지가 없는 경우 기본 아이콘 표시
-                    title: Text(data['item_name']),
-                    subtitle: Text('Price: ${data['item_price']}원'),
+                    title: Text('상품명: ' + data['item_name']),
+                    subtitle: Text('가격: ${data['item_price']}원'),
                   ),
                   Divider(), // 리스트 항목 간 구분선 추가
                 ],

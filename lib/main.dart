@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:marketplace/page/afterloginhome.dart';
 import 'package:marketplace/sub/MyAccount.dart';
-import 'account/login.dart';
-import 'account/signup.dart';
+import 'package:marketplace/account/signup.dart';
 
+import 'account/login.dart';
 import 'items/UploadItem.dart';
 import 'items/LoadItem.dart';
 
@@ -108,37 +109,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.blue,
                 ),
                 child: Text(
-                  'Menu List',
+                  '로그인 화면',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                   ),
                 ),
               ),
-              /*ListTile(
-                title: const Text('내 정보(My Account)'),
-                onTap:(){
-                  /**
-                   * Navigator.push()는 현재 화면에서 새로운 화면으로 이동
-                   * MaterialPageRoute을 사용하여 이동할 화면을 지정
-                   * 이동할 화면의 StatefulWidget을 생성하여 builder함수에
-                   * 전달하여 화면을 이동시킴
-                   */
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyItemsPage()),
-                  );
-                },
-              ),*/
-              /*ListTile(
-                title: const Text('상품 목록(Item List)'),
-                onTap:(){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ItemListPage()),
-                  );
-                },
-              ),*/
               const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -172,100 +149,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ]
         ),
       ),
-      body: ItemtoList(),
+
+      body: ItemListPage(userId: '',)
+
     );
-  }
-}class ItemtoList extends StatelessWidget {
-  final List<Map<String, String>> items = [
-    {
-      'name': 'Item 1',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 2',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },{
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },{
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },{
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },{
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },{
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Item 3',
-      'image': 'https://via.placeholder.com/150',
-    },
-
-
-
-
-
-
-  ];
-
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-            );
-          },
-          child: Card(
-            child: Row(
-              children: [
-                Image.network(
-                  item['image']!,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(width: 10),
-                Text(item['name']!),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+    }
 }
+
+
+
