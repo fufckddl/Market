@@ -8,25 +8,64 @@ import 'account/signup.dart';
 import 'items/UploadItem.dart';
 import 'items/LoadItem.dart';
 
+const String _firebaseApiKey = String.fromEnvironment(
+  'MARKET_FIREBASE_API_KEY',
+);
+const String _firebaseAuthDomain = String.fromEnvironment(
+  'MARKET_FIREBASE_AUTH_DOMAIN',
+);
+const String _firebaseProjectId = String.fromEnvironment(
+  'MARKET_FIREBASE_PROJECT_ID',
+);
+const String _firebaseStorageBucket = String.fromEnvironment(
+  'MARKET_FIREBASE_STORAGE_BUCKET',
+);
+const String _firebaseMessagingSenderId = String.fromEnvironment(
+  'MARKET_FIREBASE_MESSAGING_SENDER_ID',
+);
+const String _firebaseAppId = String.fromEnvironment('MARKET_FIREBASE_APP_ID');
+const String _firebaseMeasurementId = String.fromEnvironment(
+  'MARKET_FIREBASE_MEASUREMENT_ID',
+);
+const String _firebaseDatabaseUrl = String.fromEnvironment(
+  'MARKET_FIREBASE_DATABASE_URL',
+);
 
-void init() async{
-}
+bool get _hasFirebaseConfig =>
+    _firebaseApiKey.isNotEmpty &&
+    _firebaseAuthDomain.isNotEmpty &&
+    _firebaseProjectId.isNotEmpty &&
+    _firebaseStorageBucket.isNotEmpty &&
+    _firebaseMessagingSenderId.isNotEmpty &&
+    _firebaseAppId.isNotEmpty;
+
+void init() async {}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "your-firebase-api-key",
-        authDomain: "your-project.firebaseapp.com",
-        projectId: "your-firebase-project-id",
-        storageBucket: "your-project.appspot.com",
-        messagingSenderId: "your-sender-id",
-        appId: "your-firebase-app-id",
-        measurementId: "your-measurement-id",
-        databaseURL: 'https://your-project.firebaseio.com',
-      ),
-    );
+    if (_hasFirebaseConfig) {
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: _firebaseApiKey,
+          authDomain: _firebaseAuthDomain,
+          projectId: _firebaseProjectId,
+          storageBucket: _firebaseStorageBucket,
+          messagingSenderId: _firebaseMessagingSenderId,
+          appId: _firebaseAppId,
+          measurementId: _firebaseMeasurementId.isEmpty
+              ? null
+              : _firebaseMeasurementId,
+          databaseURL: _firebaseDatabaseUrl.isEmpty
+              ? null
+              : _firebaseDatabaseUrl,
+        ),
+      );
+    } else {
+      debugPrint(
+        'Firebase config is not set. Skipping Firebase.initializeApp.',
+      );
+    }
     runApp(const MyApp());
   } catch (error) {
     // Handle initialization error
@@ -39,12 +78,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Market Place Example',
-      home: MyHomePage(),
-    );
+    return const MaterialApp(title: 'Market Place Example', home: MyHomePage());
   }
 }
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -53,7 +90,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController id = TextEditingController(), pwd = TextEditingController();
+  TextEditingController id = TextEditingController(),
+      pwd = TextEditingController();
   bool _isLoggedIn = false;
 
   @override
@@ -79,9 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
          * AppBar의 하위 위젯인것처럼 동작시킬 수 있음.
          */
         leading: Builder(
-          builder: (BuildContext context) { // Builder 위젯 추가
+          builder: (BuildContext context) {
+            // Builder 위젯 추가
             return IconButton(
-              onPressed: (){
+              onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
               icon: const Icon(Icons.menu),
@@ -89,63 +128,54 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
         backgroundColor: Colors.white,
-        elevation: 4,//그림자(회색?)
+        elevation: 4, //그림자(회색?)
       ),
-
-
 
       drawer: Drawer(
         child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              /**
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            /**
                * DrawerHeader의 높이를 조절하려면
                * ListTile로 변경해서 직접 조절해야함.
                * 이상태에서 조절하는 방법은 없음.
                */
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  '로그인 화면',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                '로그인 화면',
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
-              const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: (){
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  LoginScreen()),
-                      );
-                    },
-                    child: const Text("로그인"),
-                  ),
-                  const SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
-                  ElevatedButton(
-                    onPressed: () {
-                      setState((){
-                        _isLoggedIn = true;
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  SignUpPage()),
-                      );
-                    },
-                    child: const Text("회원가입"),
-                  ),
-                ],
-              ),
-
-            ]
+            ),
+            const SizedBox(height: 25), // TextField와 ElevatedButton 사이의 간격을 조절
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: const Text("로그인"),
+                ),
+                const SizedBox(width: 15), // ElevatedButton 간의 간격을 조절
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isLoggedIn = true;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                    );
+                  },
+                  child: const Text("회원가입"),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
